@@ -18,6 +18,7 @@ private:
     bool kleneClasp();
     bool concatenation();
     bool orOp();
+    bool unitiOperator(char op);
 public:
     Posfixa(std::string regex);
 

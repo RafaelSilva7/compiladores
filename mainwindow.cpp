@@ -22,12 +22,14 @@ void MainWindow::on_convertButton_clicked()
     Posfixa pos(text.toStdString());
 
     if (pos.algorithm1()){
-        QString posfixa = QString::fromStdString(pos.get_posfixa());
-        ui->outputLabel->setText(posfixa);
+        if (pos.algorithm2()){
+            QString posfixa = QString::fromStdString(pos.get_posfixa());
+            ui->outputLabel->setText(posfixa);
+            return;
+        }
     }
-    else {
-        ui->outputLabel->setText("Expressão invalida!!");
-    }
+
+    ui->outputLabel->setText("Expressão invalida!!");
 }
 
 void MainWindow::on_clearButton_clicked()

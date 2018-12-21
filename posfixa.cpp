@@ -74,16 +74,73 @@ bool Posfixa::algorithm1()
 
 bool Posfixa::algorithm2()
 {
-    for (auto it = this->posfixa.begin(); it < this->posfixa.end(); it++) {
+    char op1, op2;
+    for (auto it = this->posfixa.begin(); it < this->posfixa.end(); it++)
+    {
         if (*it == '\\')
         {
             this->stack.push(*it);
             this->stack.push(*(++it));
         } else if (this->isOperand(it, false))
         {
-            if ()
+            this->stack.push(*it);
+        } else {
+            if (!this->stack.empty())
+            {
+                op2 = this->stack.top();
+                this->stack.pop();
+
+                // Remover!!!, depois
+                if (!this->stack.empty() && this->stack.top() == '\\')
+                    this->stack.pop();
+
+                if (this->unitiOperator(*it))
+                {
+                    //valor = resultado de aplicar o operador op2;
+                    this->stack.push(op2);
+                } else {
+                    if (!this->stack.empty())
+                    {
+                        op1 = this->stack.top();
+                        this->stack.pop();
+
+                        // Remover!!!, depois
+                        if (!this->stack.empty() && this->stack.top() == '\\')
+                            this->stack.pop();
+
+                        //valor = resultado de aplicar operador atual sobre os
+                        //        operandos op1 e op2
+                        this->stack.push(op1);
+                    } else {
+                        std::cout << "Erro:\nFalta de Operandos.1" << std::endl;
+                        return false;
+                    }
+                }
+            } else {
+                std::cout << "Erro:\nFalta de Operandos.2" << std::endl;
+                return false;
+            }
         }
     }
+
+    if (!this->stack.empty()){
+
+        op1 = this->stack.top();
+        this->stack.pop();
+
+        // Remover!!!, depois
+        if (!this->stack.empty() && this->stack.top() == '\\')
+            this->stack.pop();
+
+        if (this->stack.empty())
+        {
+            std::cout << "Expressão válida" << std::endl;
+            //std::cout << "Resultado:\n" << op1 << std::endl;
+            return true;
+        }
+    }
+    std::cout << "Erro:\nFalta de Operandos.3" << std::endl;
+    return false;
 }
 
 bool Posfixa::isOperator(char a){
@@ -141,3 +198,7 @@ std::string Posfixa::get_posfixa(){
     return this->posfixa;
 }
 
+bool Posfixa::unitiOperator(char op)
+{
+    return (op == '*');
+}
