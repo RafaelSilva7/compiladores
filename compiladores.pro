@@ -27,11 +27,13 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    posfixa.cpp
+    posfixa.cpp \
+    automaton.cpp
 
 HEADERS += \
         mainwindow.h \
-    posfixa.h
+    posfixa.h \
+    automaton.h
 
 
 FORMS += \
@@ -41,3 +43,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    images/brasãoUFT.png

@@ -16,9 +16,10 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_convertButton_clicked();
 
     void on_clearButton_clicked();
+
+    void on_converterButton_clicked();
 
 private:
     Ui::MainWindow *ui;
