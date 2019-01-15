@@ -5,6 +5,9 @@
 #include <QGraphicsScene>
 #include <QImage>
 
+// Test
+#include "automaton.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -29,12 +32,13 @@ MainWindow::~MainWindow()
 void MainWindow::on_clearButton_clicked()
 {
     ui->inputLineEdit->setText("");
+    ui->outputLineEdit->setText("");
+    ui->consoleTextEdit->setPlainText("");
 }
 
 void MainWindow::on_converterButton_clicked()
 {
     QString text = ui->inputLineEdit->text();
-    //qInfo("%s", text.toStdString().c_str());
 
     Posfixa pos(text.toStdString());
 
@@ -42,10 +46,13 @@ void MainWindow::on_converterButton_clicked()
         if (pos.algorithm2()){
             QString posfixa = QString::fromStdString(pos.get_posfixa());
             ui->outputLineEdit->setText(posfixa);
+            ui->consoleTextEdit->setPlainText("Expressão válida!");
             return;
         }
     }
+    ui->consoleTextEdit->setPlainText("Expressão inválida!!");
 
-    ui->outputLabel->setText("Expressão invalida!!");
+    Automaton base = Automaton::base("a");
+    base.pf();
+
 }
-

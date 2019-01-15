@@ -1,30 +1,58 @@
 #ifndef AUTOMATON_H
 #define AUTOMATON_H
 
+#include <vector>
+#include <string>
 
-class automaton
+#define VOID -1
+
+typedef int State;
+typedef std::vector<int> States;
+typedef struct
+{
+    States states;
+    int numStates;
+} Transition;
+typedef std::vector<std::vector<Transition>> TransitionMatrix;
+typedef std::string Symbol;
+typedef std::vector<Symbol> Alphabet;
+typedef std::string Word;
+
+class Automaton
 {
 private:
-    vector<char> alphabet;
-    vector<int> states;
-    int initialState;
-    vector<int> finalStates;
 
 public:
-    automaton();
-    bool isSymbol(char a);
-    bool isState(char q);
-    bool isFinalState(char q);
+    Alphabet alphabet;
+    States states;
+    TransitionMatrix transitonMatrix;
+    State initialState;
+    States finalStates;
+    int numStates;
+    int numFinalStates;
 
-    vector<int> transitionFunction(char q, char a);
-    vector<int> extendTransitionFunction(char q, int w);
-    bool renameState(char q, char name);
-    bool alphabetUnion(vector<char> aphabet1, vector<char> aphabet2);
-    bool uneStates(vector<int> state1, vector<int> state2);
+    Automaton();
+    int isSymbol(Symbol a);
+    int isState(State q);
+    bool isFinalState(State q);
 
-    int klenneClasp(q);
+    States transitionFunction(State q, Symbol a);
+    States extendTransitionFunction(State q, Word w);
+
+    //bool renameState(State q, int name);
+    Alphabet alphabetUnion(Alphabet aphabet1, Alphabet aphabet2);
+    States uneStates(States states1, States states2);
+
+    static Automaton base(Symbol symbol);
+    static Automaton concatenation(Automaton a, Automaton b);
+    static Automaton automatonUnion(Automaton a, Automaton b);
+    static Automaton klenneClasp(State q);
+
     void afd();
     void minimizesStates();
+
+    // Print this automaton
+    void pf();
 };
 
 #endif // AUTOMATON_H
