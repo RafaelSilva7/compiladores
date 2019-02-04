@@ -8,13 +8,15 @@
 // Test
 #include "automaton.h"
 
+using namespace std;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    QImage logo("/home/rafael/Documents/compiladores/images/brasãoUFT.png");
+    QImage logo("/home/rafael/Documents/homeworks/compiladores/images/brasãoUFT.png");
 
     QGraphicsScene* scene = new QGraphicsScene();
     ui->logoUFT->setScene(scene);
@@ -38,6 +40,14 @@ void MainWindow::on_clearButton_clicked()
 
 void MainWindow::on_converterButton_clicked()
 {
+
+//    Automaton a1 = Automaton::base("b");
+//    Automaton a2 = Automaton::base("\\b");
+//    Automaton a3 = Automaton::base("x");
+//    Automaton b1 = Automaton::concatenation(a1,a2);
+//    Automaton b2 = Automaton::concatenation(b1,a3);
+//    b2.pf();
+
     QString text = ui->inputLineEdit->text();
 
     Posfixa pos(text.toStdString());
@@ -51,8 +61,4 @@ void MainWindow::on_converterButton_clicked()
         }
     }
     ui->consoleTextEdit->setPlainText("Expressão inválida!!");
-
-    Automaton base = Automaton::base("a");
-    base.pf();
-
 }

@@ -2,54 +2,55 @@
 #define AUTOMATON_H
 
 #include <vector>
+#include <map>
 #include <string>
+#include <algorithm>
+#include <iostream>
 
 #define VOID -1
 
-typedef int State;
-typedef std::vector<int> States;
-typedef struct
-{
-    States states;
-    int numStates;
-} Transition;
-typedef std::vector<std::vector<Transition>> TransitionMatrix;
-typedef std::string Symbol;
-typedef std::vector<Symbol> Alphabet;
-typedef std::string Word;
+using namespace std;
+
+typedef map<vector<int>,int> States;
+typedef vector<vector<vector<int>>> Transitions;
+typedef vector<string> Alphabet;
+typedef vector<string> Word;
+
 
 class Automaton
 {
 private:
+    vector<int> empty;
 
 public:
     Alphabet alphabet;
     States states;
-    TransitionMatrix transitonMatrix;
-    State initialState;
-    States finalStates;
-    int numStates;
-    int numFinalStates;
+    Transitions transitions;
+    vector<int> init_state;
+    vector<int> end_state;
+    int num_states;
+    int num_end_states;
 
     Automaton();
-    int isSymbol(Symbol a);
-    int isState(State q);
-    bool isFinalState(State q);
+    int getSymbol(string symbol);
+    int getState(vector<int> state); // send array of states
+    bool isFinalState(vector<int> state); // send array of states
+    static bool isSymbol(Alphabet alphabet,string symbol);
 
-    States transitionFunction(State q, Symbol a);
-    States extendTransitionFunction(State q, Word w);
+    vector<int> transitionFunction(vector<int> state, string symbol);
+    //States extendTransitionFunction(int* state,Word word);
 
-    //bool renameState(State q, int name);
-    Alphabet alphabetUnion(Alphabet aphabet1, Alphabet aphabet2);
-    States uneStates(States states1, States states2);
+    //bool renameState(State q, int name); // send state position and new name (array)
+    static Alphabet alphabetUnion(Alphabet alphabet1, Alphabet alphabet2);
+    //States uneStates(States states1, States states2);
 
-    static Automaton base(Symbol symbol);
+    static Automaton base(string symbol);
     static Automaton concatenation(Automaton a, Automaton b);
-    static Automaton automatonUnion(Automaton a, Automaton b);
-    static Automaton klenneClasp(State q);
+    //static Automaton automatonUnion(Automaton a, Automaton b);
+    //static Automaton klenneClasp(State q);
 
-    void afd();
-    void minimizesStates();
+    //void afd();
+    //void minimizesStates();
 
     // Print this automaton
     void pf();
