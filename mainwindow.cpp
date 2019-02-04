@@ -5,13 +5,18 @@
 #include <QGraphicsScene>
 #include <QImage>
 
+// Test
+#include "automaton.h"
+
+using namespace std;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    QImage logo("/home/rafael/Documents/compiladores/images/brasãoUFT.png");
+    QImage logo("/home/rafael/Documents/homeworks/compiladores/images/brasãoUFT.png");
 
     QGraphicsScene* scene = new QGraphicsScene();
     ui->logoUFT->setScene(scene);
@@ -29,12 +34,21 @@ MainWindow::~MainWindow()
 void MainWindow::on_clearButton_clicked()
 {
     ui->inputLineEdit->setText("");
+    ui->outputLineEdit->setText("");
+    ui->consoleTextEdit->setPlainText("");
 }
 
 void MainWindow::on_converterButton_clicked()
 {
+
+//    Automaton a1 = Automaton::base("b");
+//    Automaton a2 = Automaton::base("\\b");
+//    Automaton a3 = Automaton::base("x");
+//    Automaton b1 = Automaton::concatenation(a1,a2);
+//    Automaton b2 = Automaton::concatenation(b1,a3);
+//    b2.pf();
+
     QString text = ui->inputLineEdit->text();
-    //qInfo("%s", text.toStdString().c_str());
 
     Posfixa pos(text.toStdString());
 
@@ -42,10 +56,9 @@ void MainWindow::on_converterButton_clicked()
         if (pos.algorithm2()){
             QString posfixa = QString::fromStdString(pos.get_posfixa());
             ui->outputLineEdit->setText(posfixa);
+            ui->consoleTextEdit->setPlainText("Expressão válida!");
             return;
         }
     }
-
-    ui->outputLabel->setText("Expressão invalida!!");
+    ui->consoleTextEdit->setPlainText("Expressão inválida!!");
 }
-
