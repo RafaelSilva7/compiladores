@@ -41,12 +41,13 @@ void MainWindow::on_clearButton_clicked()
 void MainWindow::on_converterButton_clicked()
 {
 
-//    Automaton a1 = Automaton::base("b");
-//    Automaton a2 = Automaton::base("\\b");
-//    Automaton a3 = Automaton::base("x");
-//    Automaton b1 = Automaton::concatenation(a1,a2);
-//    Automaton b2 = Automaton::concatenation(b1,a3);
-//    b2.pf();
+    Automaton a1 = Automaton::base("b");
+    Automaton a2 = Automaton::base("\\b");
+    Automaton a3 = Automaton::base("x");
+    Automaton b1 = Automaton::automatonUnion(a1,a2);
+    Automaton b2 = Automaton::automatonUnion(b1,a3);
+    b2 = Automaton::klenneClasp(b2);
+    b2.pf();
 
     QString text = ui->inputLineEdit->text();
 
