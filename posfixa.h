@@ -4,7 +4,7 @@
 #include <string>
 #include <stack>
 #include <iostream>
-
+#include <automaton.h>
 class Posfixa
 {
 private:
