@@ -4,7 +4,9 @@
 #include <string>
 #include <stack>
 #include <iostream>
-#include <automaton.h>
+#include <afne.h>
+#include <console.h>
+
 class Posfixa
 {
 private:
@@ -20,7 +22,8 @@ private:
     bool orOp();
     bool unitiOperator(char op);
 public:
-    Posfixa(std::string regex);
+    Posfixa(std::string regex, Console* console);
+    Console* console;
 
     bool algorithm1();
     bool algorithm2();

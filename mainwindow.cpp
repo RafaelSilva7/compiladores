@@ -4,9 +4,10 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QImage>
+#include <console.h>
 
 // Test
-#include "automaton.h"
+#include "afne.h"
 
 using namespace std;
 
@@ -40,26 +41,26 @@ void MainWindow::on_clearButton_clicked()
 
 void MainWindow::on_converterButton_clicked()
 {
-
-    Automaton a1 = Automaton::base("b");
-    Automaton a2 = Automaton::base("\\b");
-    Automaton a3 = Automaton::base("x");
-    Automaton b1 = Automaton::automatonUnion(a1,a2);
-    Automaton b2 = Automaton::automatonUnion(b1,a3);
-    b2 = Automaton::klenneClasp(b2);
-    b2.pf();
+    Console* console = new Console(ui->consoleTextEdit);
+//    Afn a1 = Afn::base("b", console);
+//    Afn a2 = Afn::base("\\b", console);
+//    Afn a3 = Afn::base("x", console);
+//    Afn b1 = Afn::AfnUnion(a1,a2);
+//    Afn b2 = Afn::AfnUnion(b1,a3);
+//    b2 = Afn::klenneClasp(b2);
+//    b2.pf();
 
     QString text = ui->inputLineEdit->text();
 
-    Posfixa pos(text.toStdString());
+    Posfixa pos(text.toStdString(), console);
 
     if (pos.algorithm1()){
+        QString posfixa = QString::fromStdString(pos.get_posfixa());
+        ui->outputLineEdit->setText(posfixa);
         if (pos.algorithm2()){
             QString posfixa = QString::fromStdString(pos.get_posfixa());
             ui->outputLineEdit->setText(posfixa);
-            ui->consoleTextEdit->setPlainText("Expressão válida!");
             return;
         }
     }
-    ui->consoleTextEdit->setPlainText("Expressão inválida!!");
 }

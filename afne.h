@@ -1,11 +1,12 @@
-#ifndef AUTOMATON_H
-#define AUTOMATON_H
+#ifndef Afn_H
+#define Afn_H
 
 #include <vector>
 #include <map>
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include <console.h>
 
 #define VOID -1
 
@@ -17,12 +18,13 @@ typedef vector<string> Alphabet;
 typedef vector<string> Word;
 
 
-class Automaton
+class Afn
 {
 private:
     vector<int> empty;
-    //static Automaton void_automaton;
+
 public:
+    Console* console;
     Alphabet alphabet;
     States states;
     Transitions transitions;
@@ -31,7 +33,7 @@ public:
     int num_states;
 //    int num_end_states;
 
-    Automaton();
+    Afn(Console* console);
     int getSymbol(string symbol);
     int getState(int state); // send array of states
     bool isFinalState(int state); // send array of states
@@ -44,16 +46,18 @@ public:
     static Alphabet alphabetUnion(Alphabet alphabet1, Alphabet alphabet2);
 //    States uneStates(States states1, States states2);
 
-    static Automaton base(string symbol);
-    static Automaton concatenation(Automaton a, Automaton b);
-    static Automaton automatonUnion(Automaton a, Automaton b);
-    static Automaton klenneClasp(Automaton a);
+    static Afn base(string symbol, Console* console);
+    static Afn concatenation(Afn a, Afn b);
+    static Afn AfnUnion(Afn a, Afn b);
+    static Afn klenneClasp(Afn a);
 
+    vector<int> claspE(int state, vector<int>& visited);
     //void afd();
     //void minimizesStates();
 
-    // Print this automaton
+    // Print this Afn
     void pf();
+    void pf_clasp();
 };
 
-#endif // AUTOMATON_H
+#endif // Afn_H
