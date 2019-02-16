@@ -29,13 +29,15 @@ SOURCES += \
         mainwindow.cpp \
     posfixa.cpp \
     afne.cpp \
-    console.cpp
+    console.cpp \
+    afd.cpp
 
 HEADERS += \
         mainwindow.h \
     posfixa.h \
     afne.h \
-    console.h
+    console.h \
+    afd.h
 
 
 FORMS += \

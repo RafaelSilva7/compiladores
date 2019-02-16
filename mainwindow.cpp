@@ -8,6 +8,7 @@
 
 // Test
 #include "afne.h"
+#include "afd.h"
 
 using namespace std;
 
@@ -42,13 +43,6 @@ void MainWindow::on_clearButton_clicked()
 void MainWindow::on_converterButton_clicked()
 {
     Console* console = new Console(ui->consoleTextEdit);
-//    Afn a1 = Afn::base("b", console);
-//    Afn a2 = Afn::base("\\b", console);
-//    Afn a3 = Afn::base("x", console);
-//    Afn b1 = Afn::AfnUnion(a1,a2);
-//    Afn b2 = Afn::AfnUnion(b1,a3);
-//    b2 = Afn::klenneClasp(b2);
-//    b2.pf();
 
     QString text = ui->inputLineEdit->text();
 
@@ -63,4 +57,7 @@ void MainWindow::on_converterButton_clicked()
             return;
         }
     }
+
+
+
 }

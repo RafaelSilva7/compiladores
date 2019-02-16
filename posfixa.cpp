@@ -145,6 +145,11 @@ bool Posfixa::algorithm2()
             op1.pf();
             console->myCout("\n");
             op1.pf_clasp();
+
+            console->myCout("\n -------------- Test AFD ------------\n");
+            Afd afd = op1.toAfd();
+            afd.pf();
+
             return true;
         }
     }

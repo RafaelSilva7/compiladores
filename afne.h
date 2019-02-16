@@ -2,18 +2,16 @@
 #define Afn_H
 
 #include <vector>
-#include <map>
 #include <string>
-#include <algorithm>
-#include <iostream>
 #include <console.h>
+#include <afd.h>
 
 #define VOID -1
 
 using namespace std;
 
 typedef vector<int> States;
-typedef vector<vector<vector<int>>> Transitions;
+typedef vector<vector<States>> Transitions;
 typedef vector<string> Alphabet;
 typedef vector<string> Word;
 
@@ -31,33 +29,40 @@ public:
     int init_state;
     int end_state;
     int num_states;
-//    int num_end_states;
 
+    // Constructo with console (widget)
     Afn(Console* console);
+
+    // Getters symbol and state
     int getSymbol(string symbol);
-    int getState(int state); // send array of states
-    bool isFinalState(int state); // send array of states
+    int getState(int state);
+
+    // Check if state is 'end state' or symbol
+    bool isFinalState(int state);
+    bool isEndState(set<int> states);
     static bool isSymbol(Alphabet alphabet,string symbol);
 
+    // Transition Function
     vector<int> transitionFunction(int state, string symbol);
-    //States extendTransitionFunction(int* state,Word word);
 
-    //bool renameState(State q, int name); // send state position and new name (array)
-    static Alphabet alphabetUnion(Alphabet alphabet1, Alphabet alphabet2);
-//    States uneStates(States states1, States states2);
-
+    // Functions of operations with automaton
+    static Alphabet alphabetUnion(Alphabet alphabet1, Alphabet alphabet2);  
     static Afn base(string symbol, Console* console);
     static Afn concatenation(Afn a, Afn b);
     static Afn AfnUnion(Afn a, Afn b);
     static Afn klenneClasp(Afn a);
 
+    // Get claspE of automaton's states and convert AFN-& to AFD
     vector<int> claspE(int state, vector<int>& visited);
-    //void afd();
-    //void minimizesStates();
+    bool isEqual(vector<set<int>> clouses, int state);
+    Afd toAfd();
 
-    // Print this Afn
+    // Print this Afn and Kleene's closure
     void pf();
     void pf_clasp();
+
+    // WORK AROUND
+    string hash(set<int> s);
 };
 
 #endif // Afn_H

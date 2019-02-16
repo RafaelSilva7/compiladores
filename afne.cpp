@@ -1,8 +1,94 @@
 #include "afne.h"
 
 
+// ############################
+// Constructo with console (widget)
+// ############################
 Afn::Afn(Console* console){
     this->console = console;
+}
+
+
+// ############################
+// Getters symbol and state
+// ############################
+int Afn::getSymbol(string symbol)
+{
+//    Get the position of symbol in alphabet
+    for (int i=0;i<alphabet.size();i++)
+        if(symbol.compare(alphabet[i]) == 0)
+            return i;
+
+    return VOID;
+}
+
+int Afn::getState(int state)
+{
+//    Get the position of state in transitions matrix
+    for (int i=0;i<this->states.size(); i++)
+        if (this->states[i] == state)
+            return i;
+
+    return VOID;
+}
+
+
+// ############################
+// Check if state is 'end state' or symbol
+// ############################
+bool Afn::isSymbol(Alphabet alphabet, string symbol)
+{
+//    Walks by alphabet and check if the symbol is have in alphabet
+    for (auto it:alphabet)
+        if (symbol.compare(it) == 0)
+            return true;
+    return false;
+}
+
+bool Afn::isFinalState(int state)
+{
+//    Check if  state is a 'end state'
+    return (init_state == state) ? true : false;
+}
+
+bool Afn::isEndState(set<int> states){
+    for (auto it:states)
+        if (it == end_state) return true;
+    return false;
+}
+
+
+// ############################
+// Transition Function
+// ############################
+vector<int> Afn::transitionFunction(int state, string symbol)
+{
+    int i = this->getState(state);
+    int j = this->getSymbol(symbol);
+
+    if (i == VOID || j == VOID){
+        return empty;
+    }
+
+    return this->transitions[i][j];
+}
+
+
+// ############################
+// Functions of operations with automaton
+// ############################
+Alphabet Afn::alphabetUnion(Alphabet alphabet1, Alphabet alphabet2)
+{
+    Alphabet alphabet = alphabet1;
+
+    for(auto it:alphabet2)
+        if (!Afn::isSymbol(alphabet, it))
+            alphabet.push_back(it);
+
+    if (!Afn::isSymbol(alphabet, "&"))
+        alphabet.push_back("&");
+
+    return alphabet;
 }
 
 Afn Afn::base(string symbol, Console* console)
@@ -71,7 +157,7 @@ Afn Afn::concatenation(Afn a, Afn b)
             int y = Afn.getSymbol(j);
 
             if (x == VOID || y == VOID)
-                cout << "Error:\nInvalid state!" << endl;
+                a.console->myCout("Error:\nInvalid state!1");
 
             vector<int> transition = a.transitionFunction(i, j);
             Afn.transitions[x][y] = transition;
@@ -85,7 +171,7 @@ Afn Afn::concatenation(Afn a, Afn b)
             int y = Afn.getSymbol(j);
 
             if (x == VOID || y == VOID)
-                cout << "Error:\nInvalid state!" << endl;
+                a.console->myCout("Error:\nInvalid state!2");
 
             vector<int> aux, transition = b.transitionFunction(i, j);
             for(auto it:transition)
@@ -151,7 +237,7 @@ Afn Afn::AfnUnion(Afn a, Afn b)
             int y = Afn.getSymbol(j);
 
             if (x == VOID || y == VOID)
-                cout << "Error:\nInvalid state!" << endl;
+                a.console->myCout("Error:\nInvalid state!3");
 
             vector<int> aux, transition = a.transitionFunction(i, j);
             for(auto it:transition)
@@ -228,7 +314,7 @@ Afn Afn::klenneClasp(Afn a)
             int y = Afn.getSymbol(j);
 
             if (x == VOID || y == VOID)
-                cout << "Error:\nInvalid state!" << endl;
+                a.console->myCout("Error:\nInvalid state!4");
 
             vector<int> aux, transition = a.transitionFunction(i, j);
             for(auto it:transition)
@@ -257,18 +343,10 @@ Afn Afn::klenneClasp(Afn a)
 
 }
 
-vector<int> Afn::transitionFunction(int state, string symbol)
-{
-    int i = this->getState(state);
-    int j = this->getSymbol(symbol);
 
-    if (i == VOID || j == VOID){
-        return empty;
-    }
-
-    return this->transitions[i][j];
-}
-
+// ############################
+// Get claspE of automaton's states and convert AFN-& to AFD
+// ############################
 vector<int> Afn::claspE(int state, States& visited){
 
     // Check if courrent state is visited
@@ -301,55 +379,103 @@ vector<int> Afn::claspE(int state, States& visited){
     return exit;
 }
 
-int Afn::getSymbol(string symbol)
-{
-//    Get the position of symbol in alphabet
-    for (int i=0;i<alphabet.size();i++)
-        if(symbol.compare(alphabet[i]) == 0)
-            return i;
-
-    return VOID;
-}
-
-int Afn::getState(int state)
-{
-//    Get the position of state in transitions matrix
-    for (int i=0;i<this->states.size(); i++)
-        if (this->states[i] == state)
-            return i;
-
-    return VOID;
-}
-
-bool Afn::isFinalState(int state)
-{
-//    Check if  state is a 'end state'
-    return (init_state == state) ? true : false;
-}
-
-Alphabet Afn::alphabetUnion(Alphabet alphabet1, Alphabet alphabet2)
-{
-    Alphabet alphabet = alphabet1;
-
-    for(auto it:alphabet2)
-        if (!Afn::isSymbol(alphabet, it))
-            alphabet.push_back(it);
-
-    if (!Afn::isSymbol(alphabet, "&"))
-        alphabet.push_back("&");
-
-    return alphabet;
-}
-
-bool Afn::isSymbol(Alphabet alphabet, string symbol)
-{
-//    Walks by alphabet and check if the symbol is have in alphabet
-    for (auto it:alphabet)
-        if (symbol.compare(it) == 0)
-            return true;
+bool Afn::isEqual(vector<set<int>> clouses, int state){
+    for (auto i: clouses){
+        for(auto j:i)
+            if (j == state) return true;
+    }
     return false;
 }
 
+Afd Afn::toAfd(){
+    // Vector
+    States aux;
+    string str;
+
+    // Create to AFD
+    Afd afd(console);
+    afd.setAlphatet(alphabet);
+
+    // Get Kleene's clouses to AFN
+    set<int> s;
+    vector<set<int>> clouses;
+    for (auto it: states){
+        if (clouses.empty()){
+            aux = claspE(it,aux);
+            s.insert(aux.begin(), aux.end());
+            clouses.push_back(s);
+            s.clear();
+            aux.clear();
+            continue;
+        }
+        if (!isEqual(clouses, it)){
+            aux = claspE(it,aux);
+            s.insert(aux.begin(), aux.end());
+            clouses.push_back(s);
+            s.clear();
+            aux.clear();
+        }
+    }
+
+    // Mapping Kleene's clouses to AFD and create this states
+    for (auto it:clouses){
+        str = hash(it);
+        afd.m[str] = afd.m.size();
+        afd.states.push_back(afd.m.size()-1);
+    }
+
+    // Allocate transitions
+    for (int i=0;i<afd.states.size();i++){
+        vector<int> temp(afd.alphabet.size(), VOID);
+        afd.transitions.push_back(temp);
+    }
+
+    // Convert transitions of AFN-E by AFD
+    for (int i=0;i<clouses.size();i++){
+        for (int j=0;j<afd.alphabet.size();j++){
+
+            // Get set of transitions of state
+            set<int> new_state;
+            for (auto it:clouses[i]){
+                States aux = transitionFunction(it,afd.alphabet[j]);
+
+                // Union Kleene's clouses
+                if (!aux.empty()){
+                    int x = aux[0];
+                    aux.clear();
+                    aux = claspE(x, aux);
+                    new_state.insert(aux.begin(), aux.end());
+                }
+            }
+
+            // Check if is new state
+            if (new_state.size() == 0) continue;
+
+            str = hash(new_state);
+            if (afd.m.find(str) == afd.m.end()){
+                afd.m[str] = afd.m.size();
+                vector<int> n(afd.alphabet.size(), VOID);
+                afd.transitions.push_back(n);
+            }
+
+            // Check if is an end state
+            if (isEndState(new_state))
+                    afd.ends_state.push_back(afd.m[str]);
+
+            afd.transitions[i][j] = afd.m[str];
+        }
+    }
+
+    // Set the initial state
+    afd.init_state = 0;
+
+    return afd;
+}
+
+
+// ############################
+// Print this Afn and Kleene's closure
+// ############################
 void Afn::pf()
 {
 //    Print the alphabet
@@ -408,4 +534,16 @@ void Afn::pf_clasp(){
         console->myCout("}\n");
         // Test
     }
+}
+
+
+// ############################
+// WORK AROUND
+// ############################
+string Afn::hash(set<int> s){
+    string str = "";
+    for (auto it:s){
+        str += std::to_string(it);
+    }
+    return str;
 }
