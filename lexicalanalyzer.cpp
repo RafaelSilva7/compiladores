@@ -58,16 +58,23 @@ void LexicalAnalyzer::toRecognize(string input)
     recognized.clear();
     ribbon = removeSpace(input);
     ribbon_position = 0;
-    while (ribbon_position < ribbon.size()){
-        bool flag = true;
-        int counter = 0;
+    int pos_last_token = 0;
+    while (pos_last_token < ribbon.size()){
+        //bool flag = true;
+        int counter = 0;//
+        int pos_init = pos_last_token;
+        string last_token = "";
+        int last_end_state = VOID;
+
         for (int i = 0; i < rules.size(); i++){
+            counter = 0;
+            ribbon_position = pos_init;
+            int current_end_state = VOID;
             Afd *afd = rules[i].second;
             int current_state = afd->init_state;
-            int last_end_state = VOID;
-            counter = 0;
 
             while (ribbon_position < ribbon.size()) {
+                //ribbon_position = pos_init;
                 string symbol = nextSymbol(afd->alphabet);
                 int next_state = afd->transitionFunction(current_state, symbol);
 
@@ -75,7 +82,7 @@ void LexicalAnalyzer::toRecognize(string input)
                 if (next_state != VOID){
                     current_state = next_state;
                     if (afd->isEndState(current_state)){
-                        last_end_state = current_state;
+                        current_end_state = current_state;
                         counter = 0;
                     }
                     else if (afd->isDeadState(current_state)){
@@ -90,16 +97,23 @@ void LexicalAnalyzer::toRecognize(string input)
                 }
             }
 
-            goBackRibbon(counter);
-            if (last_end_state != VOID){
-                flag = false;
-                recognized.push_back(rules[i].first);
-                break;
+            if (current_end_state != VOID){
+                last_end_state = current_end_state;
+                goBackRibbon(counter);
+                if (pos_last_token < ribbon_position || pos_last_token == 0){
+                    pos_last_token = ribbon_position;
+                    last_token = rules[i].first;
+                }
             }
         }
-        if (flag) {
-            goForwadRobbon(counter);
+
+        if (last_end_state == VOID){
+            //goBackRibbon(counter);
+            //pos_init = ribbon_position;
             recognized.push_back("erro");
+        } else {
+            pos_init = pos_last_token;
+            recognized.push_back(last_token);
         }
     }
 }
