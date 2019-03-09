@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "lexicalanalyzer.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -21,8 +23,21 @@ private slots:
 
     void on_converterButton_clicked();
 
+    void on_configAnalysisButton_clicked();
+
+    void on_clearConfigButton_clicked();
+
+    void on_runAnalisysButton_clicked();
+
+    void on_analisysClearButton_clicked();
+
+// #######################
+//    void saveFileAs();
+//    void saveFileAs(const QString &outputFileName);
+
 private:
     Ui::MainWindow *ui;
+    LexicalAnalyzer *syntax_analisys;
 };
 
 #endif // MAINWINDOW_H

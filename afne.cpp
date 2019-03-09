@@ -6,6 +6,7 @@
 // ############################
 Afn::Afn(Console* console){
     this->console = console;
+    this->afd = NULL;
 }
 
 
@@ -126,49 +127,49 @@ Afn Afn::base(string symbol, Console* console)
 
 Afn Afn::concatenation(Afn a, Afn b)
 {
-    Afn Afn(a.console);
-    Afn.alphabet = Afn::alphabetUnion(a.alphabet, b.alphabet);
-    Afn.num_states = a.num_states + b.num_states;
+    Afn afn(a.console);
+    afn.alphabet = Afn::alphabetUnion(a.alphabet, b.alphabet);
+    afn.num_states = a.num_states + b.num_states;
 
-//    Fill states of new Afn with states of 'a' and 'b'
-//    Get the 'a' Afn states
+//    Fill states of new afn with states of 'a' and 'b'
+//    Get the 'a' afn states
     for (auto i:a.states){
-        Afn.states.push_back(i);
+        afn.states.push_back(i);
     }
-//    Get the 'b' Afn states
+//    Get the 'b' afn states
     for (auto i:b.states){
-//        convert the states for new Afn
-        Afn.states.push_back(i+a.num_states);
+//        convert the states for new afn
+        afn.states.push_back(i+a.num_states);
     }
 
 //    Initialize the transitions matrix
-    for (int i=0;i<Afn.num_states;i++){
+    for (int i=0;i<afn.num_states;i++){
         vector<vector<int>> temp;
-        for(int j=0;j<Afn.alphabet.size();j++)
-            temp.push_back(Afn.empty);
-        Afn.transitions.push_back(temp);
+        for(int j=0;j<afn.alphabet.size();j++)
+            temp.push_back(afn.empty);
+        afn.transitions.push_back(temp);
     }
 
-//    Fill transition of new Afn with transitions of 'a' and 'b'
-//    Get the transitions of 'a' Afn
+//    Fill transition of new afn with transitions of 'a' and 'b'
+//    Get the transitions of 'a' afn
     for(auto i:a.states){
         for(auto j:a.alphabet){
-            int x = Afn.getState(i);
-            int y = Afn.getSymbol(j);
+            int x = afn.getState(i);
+            int y = afn.getSymbol(j);
 
             if (x == VOID || y == VOID)
                 a.console->myCout("Error:\nInvalid state!1");
 
             vector<int> transition = a.transitionFunction(i, j);
-            Afn.transitions[x][y] = transition;
+            afn.transitions[x][y] = transition;
         }
     }
-//    Get the transitions of 'b' Afn
+//    Get the transitions of 'b' afn
     for(auto i:b.states){
         for(auto j:b.alphabet){
-//            convert the states for new Afn
-            int x = Afn.getState(i+a.num_states);
-            int y = Afn.getSymbol(j);
+//            convert the states for new afn
+            int x = afn.getState(i+a.num_states);
+            int y = afn.getSymbol(j);
 
             if (x == VOID || y == VOID)
                 a.console->myCout("Error:\nInvalid state!2");
@@ -177,64 +178,64 @@ Afn Afn::concatenation(Afn a, Afn b)
             for(auto it:transition)
                 aux.push_back(it+a.num_states);
 
-            Afn.transitions[x][y] = aux;
+            afn.transitions[x][y] = aux;
         }
     }
 
-//    Create the 'void movement' in between the Afns
-    int x = Afn.getState(a.end_state);
-    int y = Afn.getSymbol("&");
+//    Create the 'void movement' in between the afns
+    int x = afn.getState(a.end_state);
+    int y = afn.getSymbol("&");
 
     vector<int> aux;
     aux.push_back(b.init_state+a.num_states);
-    Afn.transitions[x][y] = aux;
+    afn.transitions[x][y] = aux;
 
-//    Set the end state in new Afn
-    Afn.end_state = Afn.num_states-1;
+//    Set the end state in new afn
+    afn.end_state = afn.num_states-1;
 
-//    Set initial state in new Afn
-    Afn.init_state = 0;
+//    Set initial state in new afn
+    afn.init_state = 0;
 
-    return Afn;
+    return afn;
 }
 
 Afn Afn::AfnUnion(Afn a, Afn b)
 {
 
-    Afn Afn(a.console);
-    Afn.alphabet = Afn::alphabetUnion(a.alphabet, b.alphabet);
-    Afn.num_states = a.num_states + b.num_states + 2;
-    Afn.states.push_back(0);
+    Afn afn(a.console);
+    afn.alphabet = Afn::alphabetUnion(a.alphabet, b.alphabet);
+    afn.num_states = a.num_states + b.num_states + 2;
+    afn.states.push_back(0);
 
-//    Fill states of new Afn with states of 'a' and 'b'
-//    Get the 'a' Afn states
+//    Fill states of new afn with states of 'a' and 'b'
+//    Get the 'a' afn states
     for (auto i:a.states){
-        Afn.states.push_back(i+1);
+        afn.states.push_back(i+1);
     }
-//    Get the 'b' Afn states
+//    Get the 'b' afn states
     for (auto i:b.states){
-//        convert the states for new Afn
-        Afn.states.push_back(i+a.num_states+1);
+//        convert the states for new afn
+        afn.states.push_back(i+a.num_states+1);
     }
-    Afn.states.push_back(Afn.num_states-1);
+    afn.states.push_back(afn.num_states-1);
 
 
 //    Initialize the transitions matrix
-    for (int i=0;i<Afn.num_states;i++){
+    for (int i=0;i<afn.num_states;i++){
         vector<vector<int>> temp;
-        for(int j=0;j<Afn.alphabet.size();j++)
-            temp.push_back(Afn.empty);
-        Afn.transitions.push_back(temp);
+        for(int j=0;j<afn.alphabet.size();j++)
+            temp.push_back(afn.empty);
+        afn.transitions.push_back(temp);
     }
 
 
-//    Fill transition of new Afn with transitions of 'a' and 'b'
-//    Get the transitions of 'a' Afn
+//    Fill transition of new afn with transitions of 'a' and 'b'
+//    Get the transitions of 'a' afn
     for(auto i:a.states){
         for(auto j:a.alphabet){
-//            convert the states for new Afn
-            int x = Afn.getState(i+1);
-            int y = Afn.getSymbol(j);
+//            convert the states for new afn
+            int x = afn.getState(i+1);
+            int y = afn.getSymbol(j);
 
             if (x == VOID || y == VOID)
                 a.console->myCout("Error:\nInvalid state!3");
@@ -242,76 +243,76 @@ Afn Afn::AfnUnion(Afn a, Afn b)
             vector<int> aux, transition = a.transitionFunction(i, j);
             for(auto it:transition)
                 aux.push_back(it+1);
-            Afn.transitions[x][y] = aux;
+            afn.transitions[x][y] = aux;
         }
     }
-//    Get the transitions of 'b' Afn
+//    Get the transitions of 'b' afn
     for(auto i:b.states){
         for(auto j:b.alphabet){
-//            convert the states for new Afn
-            int x = Afn.getState(i+a.num_states+1);
-            int y = Afn.getSymbol(j);
+//            convert the states for new afn
+            int x = afn.getState(i+a.num_states+1);
+            int y = afn.getSymbol(j);
 
             vector<int> aux, transition = b.transitionFunction(i, j);
             for(auto it:transition)
                 aux.push_back(it+a.num_states+1);
-            Afn.transitions[x][y] = aux;
+            afn.transitions[x][y] = aux;
         }
     }
 
-//    Set the end state in new Afn
-    Afn.end_state = Afn.num_states-1;
+//    Set the end state in new afn
+    afn.end_state = afn.num_states-1;
 
-//    Set initial state in new Afn
-    Afn.init_state = 0;
+//    Set initial state in new afn
+    afn.init_state = 0;
 
-//    Create the 'void movement' in between the Afns
-    int x = Afn.init_state;
-    int y = Afn.getSymbol("&");
+//    Create the 'void movement' in between the afns
+    int x = afn.init_state;
+    int y = afn.getSymbol("&");
     vector<int> aux;
     aux.push_back(a.init_state+1);
     aux.push_back(b.init_state+a.num_states+1);
-    Afn.transitions[x][y] = aux;
+    afn.transitions[x][y] = aux;
 
     aux.clear();
-    aux.push_back(Afn.end_state);
+    aux.push_back(afn.end_state);
 
     x = a.end_state+1;
-    Afn.transitions[x][y] = aux;
+    afn.transitions[x][y] = aux;
 
     x = b.end_state+a.num_states+1;
-    Afn.transitions[x][y] = aux;
+    afn.transitions[x][y] = aux;
 
-    return Afn;
+    return afn;
 }
 
 Afn Afn::klenneClasp(Afn a)
 {
-    Afn Afn(a.console);
-    Afn.alphabet = a.alphabet;
-    if (Afn.getSymbol("&") == VOID)
-        Afn.alphabet.push_back("&");
-    Afn.num_states = a.num_states + 2;
+    Afn afn(a.console);
+    afn.alphabet = a.alphabet;
+    if (afn.getSymbol("&") == VOID)
+        afn.alphabet.push_back("&");
+    afn.num_states = a.num_states + 2;
 
-//    Set the states of new Afn
-    for (int i=0; i<Afn.num_states;i++)
-        Afn.states.push_back(i);
+//    Set the states of new afn
+    for (int i=0; i<afn.num_states;i++)
+        afn.states.push_back(i);
 
 //    Initialize the transitions matrix
-    for (int i=0;i<Afn.num_states;i++){
+    for (int i=0;i<afn.num_states;i++){
         vector<vector<int>> temp;
-        for(int j=0;j<Afn.alphabet.size();j++)
-            temp.push_back(Afn.empty);
-        Afn.transitions.push_back(temp);
+        for(int j=0;j<afn.alphabet.size();j++)
+            temp.push_back(afn.empty);
+        afn.transitions.push_back(temp);
     }
 
-//    Fill transition of new Afn with transitions of 'a' and 'b'
-//    Get the transitions of 'a' Afn
+//    Fill transition of new afn with transitions of 'a' and 'b'
+//    Get the transitions of 'a' afn
     for(auto i:a.states){
         for(auto j:a.alphabet){
-//            convert the states for new Afn
-            int x = Afn.getState(i+1);
-            int y = Afn.getSymbol(j);
+//            convert the states for new afn
+            int x = afn.getState(i+1);
+            int y = afn.getSymbol(j);
 
             if (x == VOID || y == VOID)
                 a.console->myCout("Error:\nInvalid state!4");
@@ -319,39 +320,40 @@ Afn Afn::klenneClasp(Afn a)
             vector<int> aux, transition = a.transitionFunction(i, j);
             for(auto it:transition)
                 aux.push_back(it+1);
-            Afn.transitions[x][y] = aux;
+            afn.transitions[x][y] = aux;
         }
     }
 
-//    Set the end state in new Afn
-    Afn.end_state = Afn.num_states-1;
+//    Set the end state in new afn
+    afn.end_state = afn.num_states-1;
 
-//    Set initial state in new Afn
-    Afn.init_state = 0;
+//    Set initial state in new afn
+    afn.init_state = 0;
 
-//    Create the 'void movement' in between the Afns
-    int y = Afn.getSymbol("&");
+//    Create the 'void movement' in between the afns
+    int y = afn.getSymbol("&");
     vector<int> aux;
     aux.push_back(a.init_state+1);
-    aux.push_back(Afn.end_state);
-    Afn.transitions[0][y] = aux;
+    aux.push_back(afn.end_state);
+    afn.transitions[0][y] = aux;
 
     int x = a.end_state+1;
-    Afn.transitions[x][y] = aux;
+    afn.transitions[x][y] = aux;
 
-    return Afn;
+    return afn;
 
 }
 
 
 // ############################
-// Get claspE of automaton's states and convert AFN-& to AFD
+// Get closureE of automaton's states and convert AFN-& to AFD
 // ############################
-vector<int> Afn::claspE(int state, States& visited){
+set<int> Afn::_closureE(int state, States visited){
 
     // Check if courrent state is visited
     for (auto it: visited){
         if (state == it) {
+            set<int> empty;
             return empty;
         }
     }
@@ -360,114 +362,92 @@ vector<int> Afn::claspE(int state, States& visited){
     visited.push_back(state);
 
     // Initialize exit vector
-    States exit;
-    exit.push_back(state);
+    set<int> exit;
+    exit.insert(state);
 
     // Go through automaton's transition
     States aux = transitionFunction(state,"&");
     if (!aux.empty()){
         for(auto it:aux){
-            States clasp = claspE(it,visited);
-            exit.insert(exit.end(),clasp.begin(),clasp.end());
+            set<int> clasp = _closureE(it,visited);
+            exit.insert(clasp.begin(), clasp.end());
         }
     }
 
-    // clear visited vector
-    visited.clear();
-
-    // Return the claspE
     return exit;
 }
 
-bool Afn::isEqual(vector<set<int>> clouses, int state){
-    for (auto i: clouses){
-        for(auto j:i)
-            if (j == state) return true;
+
+void Afn::closureE(){
+
+    for (auto it:states){
+        States aux;
+        set<int> s = _closureE(it,aux);
+        closuresE.push_back(s);
     }
-    return false;
 }
 
-Afd Afn::toAfd(){
-    // Vector
-    States aux;
-    string str;
+
+Afd *Afn::toAfd(){
+    if (this->afd != NULL) return this->afd;
 
     // Create to AFD
-    Afd afd(console);
-    afd.setAlphatet(alphabet);
+    Afd* afd = new Afd(console);
+    afd->setAlphatet(alphabet);
 
-    // Get Kleene's clouses to AFN
-    set<int> s;
-    vector<set<int>> clouses;
-    for (auto it: states){
-        if (clouses.empty()){
-            aux = claspE(it,aux);
-            s.insert(aux.begin(), aux.end());
-            clouses.push_back(s);
-            s.clear();
-            aux.clear();
-            continue;
-        }
-        if (!isEqual(clouses, it)){
-            aux = claspE(it,aux);
-            s.insert(aux.begin(), aux.end());
-            clouses.push_back(s);
-            s.clear();
-            aux.clear();
-        }
+    // Get Kleene's closures to AFN
+    if (closuresE.empty()) {
+        closureE();
     }
 
-    // Mapping Kleene's clouses to AFD and create this states
-    for (auto it:clouses){
-        str = hash(it);
-        afd.m[str] = afd.m.size();
-        afd.states.push_back(afd.m.size()-1);
-    }
+    // Mapping Kleene's closures to AFD and create this states
+    afd->m[closuresE[0]] = 0;
+    afd->states.push_back(0);
+    if (isEndState(closuresE[0]))
+        afd->ends_state.push_back(0);
 
     // Allocate transitions
-    for (int i=0;i<afd.states.size();i++){
-        vector<int> temp(afd.alphabet.size(), VOID);
-        afd.transitions.push_back(temp);
-    }
+    vector<int> aux1(afd->alphabet.size(), VOID);
+    afd->transitions.push_back(aux1);
 
     // Convert transitions of AFN-E by AFD
-    for (int i=0;i<clouses.size();i++){
-        for (int j=0;j<afd.alphabet.size();j++){
-
+    for (int i = 0; i < afd->states.size(); i++) {
+        set<int> current = afd->getKey(i);
+        for (int j=0;j<afd->alphabet.size();j++){
             // Get set of transitions of state
             set<int> new_state;
-            for (auto it:clouses[i]){
-                States aux = transitionFunction(it,afd.alphabet[j]);
+            for (auto it:current){
+                States aux = transitionFunction(it,afd->alphabet[j]);
 
-                // Union Kleene's clouses
+                // Union Kleene's closures
                 if (!aux.empty()){
                     int x = aux[0];
-                    aux.clear();
-                    aux = claspE(x, aux);
-                    new_state.insert(aux.begin(), aux.end());
+                    new_state.insert(closuresE[x].begin(), closuresE[x].end());
                 }
             }
 
             // Check if is new state
-            if (new_state.size() == 0) continue;
+            if (new_state.empty())
+                new_state = {-1};
 
-            str = hash(new_state);
-            if (afd.m.find(str) == afd.m.end()){
-                afd.m[str] = afd.m.size();
-                vector<int> n(afd.alphabet.size(), VOID);
-                afd.transitions.push_back(n);
+//            str = hash(new_state);
+            if (afd->m.find(new_state) == afd->m.end()){
+                afd->m[new_state] = afd->m.size();
+                vector<int> n(afd->alphabet.size(), VOID);
+                afd->transitions.push_back(n);
+                afd->states.push_back(afd->m.size()-1);
             }
 
             // Check if is an end state
             if (isEndState(new_state))
-                    afd.ends_state.push_back(afd.m[str]);
+                afd->ends_state.push_back(afd->m[new_state]);
 
-            afd.transitions[i][j] = afd.m[str];
+            afd->transitions[i][j] = afd->m[new_state];
         }
-    }
+    };
 
     // Set the initial state
-    afd.init_state = 0;
+    afd->init_state = 0;
 
     return afd;
 }
@@ -490,18 +470,14 @@ void Afn::pf()
     for (int i=0; i < num_states; i++){
         if (i == init_state){
             console->myCout("-> ");
-            console->myCout(i);
-            console->myCout("\t|");
         }
-        else if (i == end_state){
+        if (i == end_state){
             console->myCout("* ");
-            console->myCout(i);
-            console->myCout("\t|");
         }
-        else{
-            console->myCout(i);
-            console->myCout("\t|");
-        }
+
+        console->myCout("q");
+        console->myCout(i);
+        console->myCout("\t|");
 
         for (int j=0; j < alphabet.size(); j++){
             if (transitions[i][j].size() == 0)
@@ -518,32 +494,24 @@ void Afn::pf()
     }
 }
 
-void Afn::pf_clasp(){
-    States visited;
-    for (auto it:states){
-        States exit = claspE(it, visited);
+void Afn::pf_closure(){
+    if (closuresE.empty())
+        closureE();
 
-        // Test
-        console->myCout("Fecho-& - ");
-        console->myCout(it);
+    int i=0;
+    for (auto it:closuresE){
+
+        console->myCout("Fecho-& - q");
+        console->myCout(i);
         console->myCout(" -> {");
-        for (auto i:exit){
-            console->myCout(i);
+        for (auto s:it){
+            console->myCout(s);
             console->myCout(",");
         }
         console->myCout("}\n");
-        // Test
+        i++;
     }
 }
 
 
-// ############################
-// WORK AROUND
-// ############################
-string Afn::hash(set<int> s){
-    string str = "";
-    for (auto it:s){
-        str += std::to_string(it);
-    }
-    return str;
-}
+

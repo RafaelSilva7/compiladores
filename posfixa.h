@@ -4,8 +4,10 @@
 #include <string>
 #include <stack>
 #include <iostream>
-#include <afne.h>
-#include <console.h>
+
+#include "afne.h"
+#include "console.h"
+#include "afd.h"
 
 class Posfixa
 {
@@ -26,8 +28,10 @@ public:
     Console* console;
 
     bool algorithm1();
-    bool algorithm2();
+    Afn *algorithm2();
     std::string get_posfixa();
+
+    static Afn *toAfn(string input, Console* console);
 };
 
 #endif // POSFIXA_H

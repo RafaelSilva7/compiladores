@@ -1,10 +1,15 @@
 #ifndef Afn_H
 #define Afn_H
 
+#include <qdebug.h>
+
 #include <vector>
 #include <string>
 #include <console.h>
 #include <afd.h>
+#include <map>
+#include <set>
+#include <unordered_set>
 
 #define VOID -1
 
@@ -20,6 +25,9 @@ class Afn
 {
 private:
     vector<int> empty;
+    Afd *afd;
+
+    set<int> _closureE(int state, vector<int> visited);
 
 public:
     Console* console;
@@ -29,6 +37,7 @@ public:
     int init_state;
     int end_state;
     int num_states;
+    vector<set<int>> closuresE;
 
     // Constructo with console (widget)
     Afn(Console* console);
@@ -53,13 +62,13 @@ public:
     static Afn klenneClasp(Afn a);
 
     // Get claspE of automaton's states and convert AFN-& to AFD
-    vector<int> claspE(int state, vector<int>& visited);
-    bool isEqual(vector<set<int>> clouses, int state);
-    Afd toAfd();
+    void closureE();
+    bool isEqual(vector<set<int>> closures, int state);
+    Afd* toAfd();
 
     // Print this Afn and Kleene's closure
     void pf();
-    void pf_clasp();
+    void pf_closure();
 
     // WORK AROUND
     string hash(set<int> s);

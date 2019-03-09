@@ -9,7 +9,8 @@ Posfixa::Posfixa(std::string regex, Console* console)
 bool Posfixa::algorithm1()
 {
     for (auto it = this->regex.begin(); it != this->regex.end(); it++) {
-        if (*it == '\\')
+        if (*it == ' ' || *it == '\t') continue;
+        else if (*it == '\\')
         {
             this->posfixa.push_back(*it);
             this->posfixa.push_back(*(++it));
@@ -75,7 +76,7 @@ bool Posfixa::algorithm1()
     return true;
 }
 
-bool Posfixa::algorithm2()
+Afn* Posfixa::algorithm2()
 {
     std::stack<Afn> stack_afne;
     Afn op1(console), op2(console);
@@ -90,8 +91,6 @@ bool Posfixa::algorithm2()
             s += *(++it);
             op1 = Afn::base(s, console);
             stack_afne.push(op1);
-//            this->stack.push(*it);
-//            this->stack.push(*(++it));
         } else if (this->isOperand(it, false))
         {
             s = "";
@@ -104,13 +103,8 @@ bool Posfixa::algorithm2()
                 op2 = stack_afne.top();
                 stack_afne.pop();
 
-//                // Remover!!!, depois
-//                if (!stack_afne.empty() && stack_afne.top() == '\\')
-//                    stack_afne.pop();
-
                 if (this->unitiOperator(*it))
                 {
-                    //valor = resultado de aplicar o operador op2;
                     stack_afne.push(Afn::klenneClasp(op2));
                 } else {
                     if (!stack_afne.empty())
@@ -124,12 +118,12 @@ bool Posfixa::algorithm2()
                             stack_afne.push(Afn::AfnUnion(op1,op2));
                     } else {
                         console->myCout("Erro:\nFalta de Operandos.1");
-                        return false;
+                        return NULL;
                     }
                 }
             } else {
                 console->myCout("Erro:\nFalta de Operandos.2");
-                return false;
+                return NULL;
             }
         }
     }
@@ -141,20 +135,21 @@ bool Posfixa::algorithm2()
 
         if (stack_afne.empty())
         {
-            console->myCout("Expressão válida\n");
-            op1.pf();
-            console->myCout("\n");
-            op1.pf_clasp();
+            Afn* afn = new Afn(console);
 
-            console->myCout("\n -------------- Test AFD ------------\n");
-            Afd afd = op1.toAfd();
-            afd.pf();
+            afn->alphabet = op1.alphabet;
+            afn->closuresE = op1.closuresE;
+            afn->end_state = op1.end_state;
+            afn->init_state = op1.init_state;
+            afn->num_states = op1.num_states;
+            afn->states = op1.states;
+            afn->transitions = op1.transitions;
 
-            return true;
+            return afn;
         }
     }
     console->myCout("Erro:\nFalta de Operandos.3");
-    return false;
+    return NULL;
 }
 
 bool Posfixa::isOperator(char a){
@@ -215,4 +210,11 @@ std::string Posfixa::get_posfixa(){
 bool Posfixa::unitiOperator(char op)
 {
     return (op == '*');
+}
+
+
+Afn* Posfixa::toAfn(string input, Console* console){
+    Posfixa posfixa(input, console);
+    posfixa.algorithm1();
+    return posfixa.algorithm2();
 }

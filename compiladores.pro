@@ -30,14 +30,16 @@ SOURCES += \
     posfixa.cpp \
     afne.cpp \
     console.cpp \
-    afd.cpp
+    afd.cpp \
+    lexicalanalyzer.cpp
 
 HEADERS += \
         mainwindow.h \
     posfixa.h \
     afne.h \
     console.h \
-    afd.h
+    afd.h \
+    lexicalanalyzer.h
 
 
 FORMS += \

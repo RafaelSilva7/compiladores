@@ -20,11 +20,20 @@ class Afd
 {
 private:
     AfdStates empty;
+    Afd *afdMinimun;
+    vector<vector<int>> table; // Minimization table
+    map<int,int> equalStates;
+
+    void _deadStates();
+
+    // Functions for minimization
+    bool _isNotEqual(int i, int j);
+    int _equalStates(); // return number of states not equal
 
 public:
     Console* console;
-    map<string, int> m;
-
+    map<set<int>, int> m;
+    vector<int> deadStates;
     Alphabet alphabet;
     vector<int> states;
     AfdTransitions transitions;
@@ -43,19 +52,18 @@ public:
     // Check ends states and initial state
     bool isEndState(int state);
     bool isInitState(int state);
+    bool isDeadState(int state);
 
     // Transition Function and Minimized Automaton
     int transitionFunction(int state, string symbol);
-    Afd minimizedAutomaton();
-
-    // Functions for minimization
-    void mapping(AfdStates states);
+    Afd * toAfdMinimun();
 
     // Print automaton
     void pf();
+    void pf_table();
 
     // WORK AROUND
-    string hash(set<int> s);
+    set<int> getKey(int i);
 };
 
 #endif // AFD_H
