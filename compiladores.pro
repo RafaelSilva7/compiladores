@@ -28,12 +28,18 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     posfixa.cpp \
-    automaton.cpp
+    afne.cpp \
+    console.cpp \
+    afd.cpp \
+    lexicalanalyzer.cpp
 
 HEADERS += \
         mainwindow.h \
     posfixa.h \
-    automaton.h
+    afne.h \
+    console.h \
+    afd.h \
+    lexicalanalyzer.h
 
 
 FORMS += \
